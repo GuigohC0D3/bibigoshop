@@ -32,7 +32,6 @@ const Inicio = () => {
       >
         <Button
           size="lg"
-          color="blue"
           className="px-8 py-2 text-lg text-blue-600 hover:text-blue-900 shadow-md"
           onClick={() => navigate("/home")}
         >

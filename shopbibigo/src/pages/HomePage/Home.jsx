@@ -2,11 +2,21 @@ import React, { useEffect, useState } from "react";
 import AppNavbar from "../../components/Navbar/Navbar";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const [produtos, setProdutos] = useState([]);
   const [cart, setCart] = useState([]);
   const [busca, setBusca] = useState("");
+  const navigate = useNavigate()
+
+    // 🔐 Proteger acesso
+  useEffect(() => {
+    const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
+    if (!usuarioLogado) {
+      navigate("/login");
+    }
+  }, [navigate]);
 
   useEffect(() => {
     // Buscar produtos da API
@@ -54,7 +64,7 @@ const Home = () => {
     const titulo = produto.title.toLowerCase();
     return titulo.startsWith(termo) || titulo.includes(termo);
   });
-
+  
   return (
     <div>
       <AppNavbar

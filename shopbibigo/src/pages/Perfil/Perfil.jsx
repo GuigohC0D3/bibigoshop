@@ -25,13 +25,17 @@ const Perfil = () => {
   const handleAlterarFoto = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const url = URL.createObjectURL(file);
-      setPreviewFoto(url);
-      const atualizado = { ...dadosEditaveis, avatar: url };
-      setDadosEditaveis(atualizado);
-      setUsuario(atualizado);
-      localStorage.setItem("usuarioLogado", JSON.stringify(atualizado));
-      alert("Foto de perfil atualizada com sucesso!");
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64 = reader.result;
+        const atualizado = { ...dadosEditaveis, avatar: base64 };
+        setPreviewFoto(base64);
+        setDadosEditaveis(atualizado);
+        setUsuario(atualizado);
+        localStorage.setItem("usuarioLogado", JSON.stringify(atualizado));
+        alert("Foto de perfil atualizada com sucesso!");
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -48,7 +52,7 @@ const Perfil = () => {
 
   return (
     <div className="min-h-screen bg-[#0f5c6d] px-4 py-10">
-      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6 relative">
+      <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg relative">
         {/* Voltar */}
         <button
           onClick={handleVoltar}
@@ -81,7 +85,7 @@ const Perfil = () => {
           </div>
         </div>
 
-        {/* Formulário de dados */}
+        {/* Dados editáveis */}
         <div className="space-y-4 text-sm text-gray-700">
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -224,7 +228,7 @@ const Perfil = () => {
           </div>
         </div>
 
-        {/* Botões de ação */}
+        {/* Ações */}
         <div className="mt-8 flex justify-end gap-4">
           {!editando ? (
             <button

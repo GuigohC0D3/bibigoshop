@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@material-tailwind/react";
 import { TrashIcon } from "@heroicons/react/24/outline";
+import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import AppNavbar from "../../components/Navbar/Navbar";
 
 const Carrinho = () => {
   const [carrinho, setCarrinho] = useState([]);
+  const [itemParaExcluir, setItemParaExcluir] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,9 +41,20 @@ const Carrinho = () => {
     atualizarCarrinho(novo);
   };
 
-  const remover = (id) => {
-    const novo = carrinho.filter((item) => item.id !== id);
+  const confirmarRemocao = (produto) => {
+    setItemParaExcluir(produto);
+    setOpenModal(true);
+  };
+
+  const removerConfirmado = () => {
+    const novo = carrinho.filter((item) => item.id !== itemParaExcluir.id);
     atualizarCarrinho(novo);
+    toast.info(`❌ ${itemParaExcluir.title} removido do carrinho.`, {
+      position: "top-right",
+      autoClose: 2000,
+    });
+    setItemParaExcluir(null);
+    setOpenModal(false);
   };
 
   const total = carrinho.reduce(
@@ -81,7 +95,7 @@ const Carrinho = () => {
                     <Button
                       size="sm"
                       onClick={() => decrementar(produto)}
-                      className="px-2 text-black"
+                      className="px-4 text-xl text-black"
                     >
                       -
                     </Button>
@@ -89,12 +103,12 @@ const Carrinho = () => {
                     <Button
                       size="sm"
                       onClick={() => incrementar(produto)}
-                      className="px-2 text-black"
+                      className="px-4 text-xl text-black"
                     >
                       +
                     </Button>
                     <TrashIcon
-                      onClick={() => remover(produto.id)}
+                      onClick={() => confirmarRemocao(produto)}
                       className="h-5 w-5 text-red-600 cursor-pointer"
                     />
                   </div>
@@ -110,13 +124,15 @@ const Carrinho = () => {
 
             <div className="mt-6 flex flex-col sm:flex-row gap-4">
               <Button
-                color="blue"
+                className="text-black text-xl"
+                variant="outlined"
                 fullWidth
                 onClick={() => alert("Compra finalizada!")}
               >
                 Finalizar compra
               </Button>
               <Button
+                className="text-black text-xl"
                 variant="outlined"
                 fullWidth
                 onClick={() => navigate("/home")}
@@ -127,6 +143,38 @@ const Carrinho = () => {
           </>
         )}
       </div>
+
+      {/* Modal centralizado com motion blur */}
+      {openModal && (
+        <div className="fixed inset-0 z-[9999] bg-black/30 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white max-w-md w-full rounded-lg shadow-lg p-6">
+            <h3 className="text-xl font-semibold text-red-600 mb-4">
+              Confirmar exclusão
+            </h3>
+            <p className="text-gray-800 mb-6">
+              Tem certeza que deseja remover <b>{itemParaExcluir?.title}</b> do
+              carrinho?
+            </p>
+            <div className="flex justify-end gap-4">
+              <Button
+                variant="gradient"
+                className="text-black bg-gray-400"
+                color="gray"
+                onClick={() => setOpenModal(false)}
+              >
+                Cancelar
+              </Button>
+              <Button
+              className="text-black bg-red-400"
+                variant="gradient"
+                onClick={removerConfirmado}
+              >
+                Remover
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

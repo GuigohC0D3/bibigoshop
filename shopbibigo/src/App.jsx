@@ -5,6 +5,7 @@ import Perfil from "./pages/Perfil/Perfil"
 import Carrinho from "./pages/Carrinho/Carrinho"
 import LoginCadastro from "./pages/Login/LoginCadastro"
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import Configuracoes from "./pages/More/Configuracoes"
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -18,6 +19,7 @@ function App() {
         <Route path="/carrinho" element={<Carrinho />} />
         <Route path="/login" element={<LoginCadastro />} />
         <Route path="/perfil" element={<Perfil />} />
+        <Route path="/configuracoes" element={<Configuracoes />} />
       </Routes>
     </BrowserRouter>
   );
